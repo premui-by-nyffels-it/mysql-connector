@@ -1,6 +1,11 @@
 # Overview
 All the changes for the Premui MySql connector. 
 
+[0.1.2] - 2022-01-24
+
+# Fixed 
+- Missing exports. 
+
 [0.1.1] - 2022-01-24
 
 # Fixed
