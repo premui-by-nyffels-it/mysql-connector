@@ -6,4 +6,5 @@ export interface PoolConfig {
 	database: string; 
 	port: number;
 	timezone: string;
+	supportBigNumbers: boolean;
 }
