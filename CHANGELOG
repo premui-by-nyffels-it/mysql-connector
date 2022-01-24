@@ -1,7 +1,12 @@
 # Overview
 All the changes for the Premui MySql connector. 
 
-[0.1.0] - UNRELEASED
+[0.1.1] - 2022-01-24
+
+# Fixed
+- supportBigNumbers has been added to poolConfig of mysql.
+
+[0.1.0] - 2022-01-24
 
 # Added 
 - MySql Connector 
