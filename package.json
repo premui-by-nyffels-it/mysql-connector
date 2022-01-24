@@ -1,0 +1,33 @@
+{
+  "name": "premui-mysql-connector",
+  "version": "0.1.0",
+  "description": "This project is part of the PremUI library and contains all the functions, classes and services needed to create a successfull and safe MySQL connection with your MySQL server.",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": {
+    "name": "Nyffels IT",
+    "email": "chesney@nyffels-it.be",
+    "url": "https://nyffels-it.be"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://gitlab.com/nyffels-it/premui-by-nyffels-it/mysql-connector/-/issues"
+  },
+  "contributors": [
+    {
+      "email": "chesney@nyffels.be",
+      "name": "Chesney Nyffels",
+      "url": "https://nyffels.be"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "bundledDependencies": [],
+  "peerDependencies": {},
+  "repository": {
+    "url": "https://gitlab.com/nyffels-it/premui-by-nyffels-it/mysql-connector",
+    "type": "GIT"
+  },
+  "private": false
+}
