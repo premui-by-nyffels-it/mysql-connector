@@ -1,6 +1,6 @@
 {
   "name": "@premui/mysql-connector",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "This project is part of the PremUI library and contains all the functions, classes and services needed to create a successfull and safe MySQL connection with your MySQL server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,11 +42,11 @@
   "private": false,
   "homepage": "https://premui.be",
   "devDependencies": {
-    "typescript": "4.5.5"
+    "typescript": "4.6.3"
   },
   "dependencies": {
-    "@types/mysql": "2.15.20",
+    "@types/mysql": "2.15.21",
     "mysql": "2.18.1",
-    "rxjs": "7.5.2"
+    "rxjs": "7.5.5"
   }
 }

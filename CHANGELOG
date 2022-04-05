@@ -1,6 +1,11 @@
 # Overview
 All the changes for the Premui MySql connector. 
 
+[0.2.0] - 2022-04-05
+
+# Changed
+- Upgraded used depency versions.
+
 [0.1.2] - 2022-01-24
 
 # Fixed 
