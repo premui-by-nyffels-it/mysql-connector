@@ -49,20 +49,20 @@ export function processPremuiSmartTableParameters(sqlString: string, tableParame
   }
 
   /* Add the paginator parameter */
-  if (tableParameters?.paginator) {
-    sqlString += ` LIMIT ${(tableParameters.paginator.page - 1) * tableParameters.paginator.size}, ${tableParameters.paginator.size}`;
+  if (tableParameters?.pagination) {
+    sqlString += ` LIMIT ${(tableParameters.pagination.page - 1) * tableParameters.pagination.size}, ${tableParameters.pagination.size}`;
   }
 
   return sqlString;
 }
 
 export interface TableParameters {
-  paginator: PagintorParameters;
+  pagination: PagintionParameters;
   order: OrderParameters;
   search: SearchParameters[];
 }
 
-export interface PagintorParameters {
+export interface PagintionParameters {
   page: number;
   size: number;
 }
