@@ -1,19 +1,19 @@
 export function processPremuiSmartTableParameters(sqlString: string, tableParameters: TableParameters, rowCount = false): string {
   /* Add the filter parameter */
   let noAnd = false;
-  if (tableParameters.search?.length > 0 && tableParameters.search?.find((x) => x.search.length > 0) && !sqlString.toLowerCase().includes('where')) {
+  if (tableParameters.search?.length > 0 && tableParameters.search?.find((x) => x.value.length > 0) && !sqlString.toLowerCase().includes('where')) {
     sqlString += ' WHERE';
     noAnd = true;
   }
 
   if (tableParameters.search?.length > 0) {
     for (const searchValue of tableParameters.search) {
-      if (searchValue.field?.trim() != '' && searchValue.search?.length > 0) {
+      if (searchValue.keys[0]?.trim() != '' && searchValue.value?.length > 0) {
         if (noAnd) {
           sqlString += ' (';
 
           const sqlStringStack: string[] = [];
-          for (const search of searchValue.search) sqlStringStack.push(`${searchValue.field} LIKE '${search}'`);
+          for (const search of searchValue.value) sqlStringStack.push(`${searchValue.keys[0]} LIKE '${search}'`);
 
           sqlString += sqlStringStack.join(' OR ');
           sqlString += ')';
@@ -22,7 +22,7 @@ export function processPremuiSmartTableParameters(sqlString: string, tableParame
           sqlString += ' AND (';
 
           const sqlStringStack: string[] = [];
-          for (const search of searchValue.search) sqlStringStack.push(`${searchValue.field} LIKE '${search}'`);
+          for (const search of searchValue.value) sqlStringStack.push(`${searchValue.keys[0]} LIKE '${search}'`);
 
           sqlString += sqlStringStack.join(' OR ');
           sqlString += ')';
@@ -78,6 +78,6 @@ export enum DirectionEnum {
 }
 
 export interface SearchParameters {
-  field: string;
-  search: string[];
+	keys: string[];
+  value: string;
 }
