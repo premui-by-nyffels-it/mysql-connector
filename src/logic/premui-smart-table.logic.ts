@@ -1,83 +1,65 @@
-export function processPremuiSmartTableParameters(sqlString: string, tableParameters: TableParameters, rowCount = false): string {
-  /* Add the filter parameter */
-  let noAnd = false;
-  if (tableParameters.search?.length > 0 && tableParameters.search?.find((x) => x.value.length > 0) && !sqlString.toLowerCase().includes('where')) {
-    sqlString += ' WHERE';
-    noAnd = true;
+import { WhereQueryFragment, OrderQueryFragment, LimitQueryFragment } from "../interfaces/mysql-fragment.interface";
+import { DirectionEnum, TableParameters } from "../interfaces/premui-smart-table.interface";
+import { parseString } from "./parser.logic";
+
+export function convertPremuiSmartTableParametersToQueryFragments(tableParameters: TableParameters, filter = true, sort = true, pagination = true): { whereQuery: WhereQueryFragment[]; orderQuery: OrderQueryFragment[]; limitQuery: LimitQueryFragment } {
+  const whereQuery: WhereQueryFragment[] = [];
+  const orderQuery: OrderQueryFragment[] = [];
+  let limitQuery: LimitQueryFragment = null;
+
+  if (!tableParameters) {
+    return {
+      whereQuery,
+      orderQuery,
+      limitQuery,
+    };
   }
 
-  if (tableParameters.search?.length > 0) {
-    for (const searchValue of tableParameters.search) {
-      if (searchValue.keys[0]?.trim() != '' && searchValue.value?.length > 0) {
-        if (noAnd) {
-          sqlString += ' (';
+  if (filter) {
+    tableParameters.filter?.forEach((filterValue) => {
+      filterValue.type = filterValue.type ?? 'SUB';
 
-          const sqlStringStack: string[] = [];
-          for (const search of searchValue.value) sqlStringStack.push(`${searchValue.keys[0]} LIKE '${search}'`);
+      let whereQueryValue = '';
+      if (filterValue.database) whereQueryValue += `${filterValue.database}.`;
 
-          sqlString += sqlStringStack.join(' OR ');
-          sqlString += ')';
-          noAnd = false;
-        } else {
-          sqlString += ' AND (';
-
-          const sqlStringStack: string[] = [];
-          for (const search of searchValue.value) sqlStringStack.push(`${searchValue.keys[0]} LIKE '${search}'`);
-
-          sqlString += sqlStringStack.join(' OR ');
-          sqlString += ')';
-          noAnd = false;
-        }
+      switch (filterValue.type) {
+        case 'SUB':
+          whereQueryValue += `${filterValue.field} LIKE ${parseString('%' + filterValue.value + '%')}`;
+          break;
+        case 'ORDER':
+          whereQueryValue += `${filterValue.field} LIKE ${parseString('%' + filterValue.value.split('').join('%') + '%')}`;
+          break;
+        case 'STRICT':
+          whereQueryValue += `${filterValue.field} = ${parseString(filterValue.value)}`;
+          break;
       }
-    }
+
+      whereQuery.push({
+        value: whereQueryValue,
+      });
+    });
   }
 
-  if (rowCount === true) return sqlString;
-
-  /* Add the sort parameter */
-  if (tableParameters?.order?.keys?.length > 0) {
-    let orderString: string;
-    for (const singleField of tableParameters.order.keys) {
-      if (!orderString) {
-        orderString = ` ORDER BY ${singleField} ${tableParameters.order.direction == 'ASC' ? 'IS NULL' : 'IS NOT NULL'}, ${singleField} ${tableParameters.order.direction}`;
-      } else {
-        orderString += `, ${singleField} ${tableParameters.order.direction == 'ASC' ? 'IS NULL' : 'IS NOT NULL'}, ${singleField} ${tableParameters.order.direction}`;
-      }
-    }
-
-    sqlString += orderString;
+  if (sort) {
+    tableParameters.orders?.forEach((order) => {
+      orderQuery.push({
+        database: order.database,
+        direction: order.direction ?? DirectionEnum.ASC,
+        field: order.key,
+      });
+    });
   }
 
-  /* Add the paginator parameter */
-  if (tableParameters?.pagination) {
-    sqlString += ` LIMIT ${(tableParameters.pagination.page - 1) * tableParameters.pagination.size}, ${tableParameters.pagination.size}`;
+  if (pagination && tableParameters.pagination) {
+    limitQuery = {
+      count: tableParameters.pagination.size,
+      offset: (tableParameters.pagination.page - 1) * tableParameters.pagination.size,
+    };
   }
 
-  return sqlString;
-}
-
-export interface TableParameters {
-  pagination: PagintionParameters;
-  order: OrderParameters;
-  search: SearchParameters[];
-}
-
-export interface PagintionParameters {
-  page: number;
-  size: number;
-}
-
-export interface OrderParameters {
-  keys: string[];
-  direction: DirectionEnum;
-}
-
-export enum DirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export interface SearchParameters {
-	keys: string[];
-  value: string;
+  return {
+    whereQuery,
+    orderQuery,
+    limitQuery,
+  };
 }
